@@ -158,4 +158,4 @@ services:
       driver: json-file
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --cleanup --interval 10 --schedule "0 0 3 * * *"
+    command: --cleanup --schedule "0 0 3 * * *"
