@@ -149,3 +149,12 @@ services:
       - PGID=1000
       - TZ=Europe/Amsterdam
       - PLEX_CLAIM_TOKEN=${PLEX_CLAIM_TOKEN}
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    logging:
+      driver: json-file
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --cleanup --interval 10 --schedule "0 0 3 * * *"
