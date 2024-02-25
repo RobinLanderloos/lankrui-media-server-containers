@@ -51,9 +51,8 @@ cd docker-compose
 touch .env
 ```
 
-4. Start the containers
+4. Start the containers from inside the 'servarr' folder, and optionally also start your portainer instance from inside the 'portainer' folder
 ```bash
 docker-compose up -d
 ```
-
 After all containers have started, you can start configuring each service to your liking, good luck!
