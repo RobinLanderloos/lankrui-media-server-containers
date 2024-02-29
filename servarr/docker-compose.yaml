@@ -149,6 +149,22 @@ services:
       - PGID=1000
       - TZ=Europe/Amsterdam
       - PLEX_CLAIM_TOKEN=${PLEX_CLAIM_TOKEN}
+  tautulli:
+    image: ghcr.io/hotio/tautulli
+    container_name: tautulli
+    restart: unless-stopped
+    logging:
+      driver: json-file
+    network_mode: bridge
+    ports:
+      - 8181:8181
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Amsterdam
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /docker/appdata/tautulli:/config
   watchtower:
     image: containrrr/watchtower:latest
     container_name: watchtower
