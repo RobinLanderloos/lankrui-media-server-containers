@@ -34,6 +34,24 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /docker/appdata/sonarr:/config
       - /data:/data
+  readarr:
+    container_name: readarr
+    image: ghcr.io/hotio/readarr:latest
+    restart: unless-stopped
+    logging:
+      driver: json-file
+    network_mode: bridge
+    ports:
+      - 8787:8787
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Amsterdam
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /docker/appdata/readarr:/config
+      - /data:/data
   bazarr:
     container_name: bazarr
     image: ghcr.io/hotio/bazarr:latest
