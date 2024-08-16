@@ -15,7 +15,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /docker/appdata/radarr:/config
-      - /data:/data
+      - /mnt/hdd/docker-data:/data
   sonarr:
     container_name: sonarr
     image: ghcr.io/hotio/sonarr:latest
@@ -32,7 +32,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /docker/appdata/sonarr:/config
-      - /data:/data
+      - /mnt/hdd/docker-data:/data
   readarr:
     container_name: readarr
     image: ghcr.io/hotio/readarr:latest
@@ -50,7 +50,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /docker/appdata/readarr:/config
-      - /data:/data
+      - /mnt/hdd/docker-data:/data
   bazarr:
     container_name: bazarr
     image: ghcr.io/hotio/bazarr:latest
@@ -67,7 +67,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /docker/appdata/bazarr:/config
-      - /data/media:/data/media
+      - /mnt/hdd/docker-data/media:/data/media
   flaresolverr:
     container_name: flaresolverr
     image: ghcr.io/flaresolverr/flaresolverr:latest
@@ -109,7 +109,7 @@ services:
       - 8080:8080
     volumes:
       - /docker/appdata/qbittorrent:/config
-      - /data/torrents:/data/torrents
+      - /mnt/hdd/docker-data/torrents:/data/torrents
     environment:
       - PUID=1000
       - PGID=1000
@@ -146,7 +146,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /docker/appdata/sabnzbd:/config
-      - /data/usenet:/data/usenet
+      - /mnt/hdd/docker-data/usenet:/data/usenet
   plex:
     image: ghcr.io/hotio/plex:latest
     container_name: plex
@@ -159,7 +159,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /docker/appdata/plex:/config
-      - /data/media:/data/media
+      - /mnt/hdd/docker-data/media:/data/media
       - /tmp/plex:/transcode
     environment:
       - PUID=1000
