@@ -166,6 +166,19 @@ services:
       - PGID=1000
       - TZ=Europe/Amsterdam
       - PLEX_CLAIM_TOKEN=${PLEX_CLAIM_TOKEN}
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Amsterdam
+    volumes:
+      - /docker/appdata/calibre:/config
+    ports:
+      - 8010:8080 # GUI
+      - 8011:8181 # HTTPS GUI
+      - 8012:8081 # Webserver GUI
   tautulli:
     image: ghcr.io/hotio/tautulli
     container_name: tautulli
