@@ -147,6 +147,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /docker/appdata/sabnzbd:/config
       - /mnt/hdd/docker-data/usenet:/data/usenet
+      - /docker-data/usenet:/data/cache # Your incomplete downloads should download to an SSD for faster unpacking speeds
   plex:
     image: ghcr.io/hotio/plex:latest
     container_name: plex
