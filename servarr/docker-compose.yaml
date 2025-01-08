@@ -14,8 +14,8 @@ services:
       - TZ=Europe/Amsterdam
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/radarr:/config
-      - /mnt/hdd/docker-data:/data
+      - /docker-configs/radarr:/config
+      - /mnt/data/docker-data:/data
   sonarr:
     container_name: sonarr
     image: ghcr.io/hotio/sonarr:latest
@@ -31,26 +31,8 @@ services:
       - TZ=Europe/Amsterdam
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/sonarr:/config
-      - /mnt/hdd/docker-data:/data
-  readarr:
-    container_name: readarr
-    image: ghcr.io/hotio/readarr:latest
-    restart: unless-stopped
-    logging:
-      driver: json-file
-    network_mode: bridge
-    ports:
-      - 8787:8787
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - UMASK=002
-      - TZ=Europe/Amsterdam
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/readarr:/config
-      - /mnt/hdd/docker-data:/data
+      - /docker-configs/sonarr:/config
+      - /mnt/data/docker-data:/data
   bazarr:
     container_name: bazarr
     image: ghcr.io/hotio/bazarr:latest
@@ -66,8 +48,8 @@ services:
       - TZ=Europe/Amsterdam
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/bazarr:/config
-      - /mnt/hdd/docker-data/media:/data/media
+      - /docker-configs/bazarr:/config
+      - /mnt/data/docker-data/media:/data/media
   flaresolverr:
     container_name: flaresolverr
     image: ghcr.io/flaresolverr/flaresolverr:latest
@@ -97,7 +79,7 @@ services:
       - TZ=Europe/Amsterdam
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/prowlarr:/config
+      - /docker-configs/prowlarr:/config
   qbittorrent:
     image: ghcr.io/hotio/qbittorrent:latest
     container_name: qbittorrent
@@ -108,8 +90,8 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - /docker/appdata/qbittorrent:/config
-      - /mnt/hdd/docker-data/torrents:/data/torrents
+      - /docker-configs/qbittorrent:/config
+      - /mnt/data/docker-data/torrents:/data/torrents
     environment:
       - PUID=1000
       - PGID=1000
@@ -129,8 +111,8 @@ services:
       - PGID=1000
       - TZ=Europe/Amsterdam
     volumes:
-      - /docker/appdata/overseerr:/app/config
-  nzbget:
+      - /docker-configs/overseerr:/app/config
+  sabnzbd:
     image: ghcr.io/hotio/sabnzbd:latest
     container_name: sabnzbd
     restart: unless-stopped
@@ -145,9 +127,9 @@ services:
       - TZ=Europe/Amsterdam
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/sabnzbd:/config
-      - /mnt/hdd/docker-data/usenet:/data/usenet
-      - /docker-data/usenet:/data/cache # Your incomplete downloads should download to an SSD for faster unpacking speeds
+      - /docker-configs/sabnzbd:/config
+      - /docker-data/sabnzbd-cache:/data/cache # Your incomplete downloads should download to an SSD for faster unpacking speeds
+      - /mnt/data/docker-data/usenet:/data/usenet
   plex:
     image: ghcr.io/hotio/plex:latest
     container_name: plex
@@ -159,27 +141,14 @@ services:
       - 32400:32400
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/plex:/config
-      - /mnt/hdd/docker-data/media:/data/media
+      - /docker-configs/plex:/config
+      - /mnt/data/docker-data/media:/data/media
       - /tmp/plex:/transcode
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Amsterdam
       - PLEX_CLAIM_TOKEN=${PLEX_CLAIM_TOKEN}
-  calibre:
-    image: lscr.io/linuxserver/calibre:latest
-    container_name: calibre
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Amsterdam
-    volumes:
-      - /docker/appdata/calibre:/config
-    ports:
-      - 8010:8080 # GUI
-      - 8011:8181 # HTTPS GUI
-      - 8012:8081 # Webserver GUI
   tautulli:
     image: ghcr.io/hotio/tautulli
     container_name: tautulli
@@ -195,7 +164,7 @@ services:
       - TZ=Europe/Amsterdam
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/tautulli:/config
+      - /docker-configs/tautulli:/config
   watchtower:
     image: containrrr/watchtower:latest
     container_name: watchtower
