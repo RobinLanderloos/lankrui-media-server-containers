@@ -33,6 +33,23 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /docker-configs/sonarr:/config
       - /mnt/data/docker-data:/data
+  sonarr-anime:
+    container_name: sonarr-anime
+    image: ghcr.io/hotio/sonarr:latest
+    restart: unless-stopped
+    logging:
+      driver: json-file
+    network_mode: bridge
+    ports:
+      - 8998:8989
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Amsterdam
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /docker-configs/sonarr-anime:/config
+      - /mnt/data/docker-data:/data
   bazarr:
     container_name: bazarr
     image: ghcr.io/hotio/bazarr:latest
@@ -175,3 +192,11 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --cleanup --schedule "0 0 3 * * *"
+  recyclarr:
+    image: ghcr.io/recyclarr/recyclarr:latest
+    container_name: recyclarr
+    user: 1000:1000
+    network_mode: bridge
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /docker-configs/recyclarr:/config
