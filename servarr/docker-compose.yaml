@@ -67,20 +67,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /docker-configs/bazarr:/config
       - /mnt/data/docker-data/media:/data/media
-  flaresolverr:
-    container_name: flaresolverr
-    image: ghcr.io/flaresolverr/flaresolverr:latest
-    restart: unless-stopped
-    logging:
-      driver: json-file
-    network_mode: bridge
-    environment:
-      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
-      - TZ=Europe/Amsterdam
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-    ports:
-      - 8191:8191
   prowlarr:
     container_name: prowlarr
     image: ghcr.io/hotio/prowlarr:latest
@@ -165,6 +151,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Amsterdam
+      - VERSION=docker
       - PLEX_CLAIM_TOKEN=${PLEX_CLAIM_TOKEN}
   tautulli:
     image: ghcr.io/hotio/tautulli
