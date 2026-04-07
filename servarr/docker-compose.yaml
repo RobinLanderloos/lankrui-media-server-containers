@@ -100,9 +100,9 @@ services:
       - PGID=1000
       - TZ=Europe/Amsterdam
       - WEBUI_PORTS=8080
-  overseerr:
-    image: sctx/overseerr:latest
-    container_name: overseerr
+  seerr:
+    image: ghcr.io/seerr-team/seerr:latest
+    container_name: seerr 
     restart: unless-stopped
     logging:
       driver: json-file
