@@ -170,7 +170,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /docker-configs/tautulli:/config
   watchtower:
-    image: containrrr/watchtower:latest
+    image: ghcr.io/nicholas-fedor/watchtower:latest # maintained fork of the archived containrrr/watchtower
     container_name: watchtower
     network_mode: bridge
     restart: unless-stopped
