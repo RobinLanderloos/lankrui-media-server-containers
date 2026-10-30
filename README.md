@@ -70,3 +70,8 @@ radarr_apikey: <key>
 ```
 
 After adding a `trash_id` profile that already exists in Sonarr/Radarr, run `recyclarr state repair --adopt` once so it is adopted instead of duplicated. Preview changes before applying with `recyclarr sync --preview`.
+
+# Backups and updates
+- `config-backup` archives `/docker-configs` every night at 02:30 (Europe/Amsterdam) to `/mnt/data/backups/docker-configs` and keeps 14 days. Plex metadata/media/cache and logs are excluded because they can be rebuilt. Create the target folder once: `mkdir -p /mnt/data/backups/docker-configs`.
+- Watchtower updates all containers at 03:00, 30 minutes after the backup. To roll back an app, restore its folder from the newest archive and pin the previous image tag in the compose file.
+- Run a backup right now with `docker exec config-backup backup`.

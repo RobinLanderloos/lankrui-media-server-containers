@@ -176,9 +176,36 @@ services:
     restart: unless-stopped
     logging:
       driver: json-file
+    environment:
+      - TZ=Europe/Amsterdam
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
+    # Runs at 03:00 local time, 30 minutes after the config-backup service below
     command: --cleanup --schedule "0 0 3 * * *"
+  config-backup:
+    image: ghcr.io/offen/docker-volume-backup:v2
+    container_name: config-backup
+    restart: unless-stopped
+    network_mode: bridge
+    user: 1000:1000
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    environment:
+      - TZ=Europe/Amsterdam
+      - BACKUP_CRON_EXPRESSION=30 2 * * *
+      - BACKUP_FILENAME=docker-configs-%Y-%m-%d_%H-%M-%S.tar.gz
+      - BACKUP_PRUNING_PREFIX=docker-configs-
+      - BACKUP_RETENTION_DAYS=14
+      # Skip data that can be rebuilt: Plex metadata/media/cache, logs, recyclarr's git cache, leftovers
+      - BACKUP_EXCLUDE_REGEXP=/(Metadata|Media|Cache|Temp|Codecs|Crash Reports|Logs|logs|repositories|jellyfin|jellyseerr)(/|$)|\.zip$
+    volumes:
+      - /docker-configs:/backup/docker-configs:ro
+      # Backups go to the data disk so a failure of the system disk does not take them along
+      - /mnt/data/backups/docker-configs:/archive
   recyclarr:
     image: ghcr.io/recyclarr/recyclarr:latest
     container_name: recyclarr
