@@ -200,10 +200,21 @@ services:
       - BACKUP_FILENAME=docker-configs-%Y-%m-%d_%H-%M-%S.tar.gz
       - BACKUP_PRUNING_PREFIX=docker-configs-
       - BACKUP_RETENTION_DAYS=14
-      # Skip data that can be rebuilt: Plex metadata/media/cache, logs, recyclarr's git cache, leftovers
-      - BACKUP_EXCLUDE_REGEXP=/(Metadata|Media|Cache|Temp|Codecs|Crash Reports|Logs|logs|repositories|jellyfin|jellyseerr)(/|$)|\.zip$
+      # Skip data that can be rebuilt: Plex metadata/media/cache/scanners, logs, Recyclarr's cached guides, saved NZBs
+      - BACKUP_EXCLUDE_REGEXP=/(Metadata|Media|Cache|Caches|cache|Temp|Codecs|Crash Reports|Logs|logs|repositories|resources|Scanners|nzb-backup)(/|$)|\.zip$
     volumes:
-      - /docker-configs:/backup/docker-configs:ro
+      # Mounted per app: /docker-configs/portainer/backups is root-only and would abort the archive
+      - /docker-configs/bazarr:/backup/bazarr:ro
+      - /docker-configs/overseerr:/backup/seerr:ro
+      - /docker-configs/plex:/backup/plex:ro
+      - /docker-configs/prowlarr:/backup/prowlarr:ro
+      - /docker-configs/qbittorrent:/backup/qbittorrent:ro
+      - /docker-configs/radarr:/backup/radarr:ro
+      - /docker-configs/recyclarr:/backup/recyclarr:ro
+      - /docker-configs/sabnzbd:/backup/sabnzbd:ro
+      - /docker-configs/sonarr:/backup/sonarr:ro
+      - /docker-configs/sonarr-anime:/backup/sonarr-anime:ro
+      - /docker-configs/tautulli:/backup/tautulli:ro
       # Backups go to the data disk so a failure of the system disk does not take them along
       - /mnt/data/backups/docker-configs:/archive
   recyclarr:
