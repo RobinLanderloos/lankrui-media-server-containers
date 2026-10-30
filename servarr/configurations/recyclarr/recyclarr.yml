@@ -1,129 +1,153 @@
+# yaml-language-server: $schema=https://schemas.recyclarr.dev/v8/config-schema.json
+#
+# Recyclarr v8 configuration. Profiles are guide-backed (trash_id) and custom formats
+# come from CF groups. See https://recyclarr.dev/guide/upgrade-guide/v8.0/
+#
+# `name` on a profile keeps the name that already exists in Sonarr/Radarr, so the
+# profile is adopted instead of duplicated.
+
 sonarr:
   sonarr-anime:
     base_url: !secret sonarr_anime_url
     api_key: !secret sonarr_anime_apikey
 
-    include:
-      # Comment out any of the following includes to disable them
-      - template: sonarr-quality-definition-anime
-      - template: sonarr-v4-quality-profile-anime
-      - template: sonarr-v4-custom-formats-anime
+    quality_definition:
+      type: anime
 
-    # Custom Formats: https://recyclarr.dev/wiki/yaml/config-reference/custom-formats/
+    media_naming:
+      series: plex-tvdb
+      season: default
+      episodes:
+        rename: true
+        standard: default
+        daily: default
+        anime: default
+
+    quality_profiles:
+      - trash_id: 20e0fc959f1f1704bed501f23bdae76f # [Anime] Remux-1080p
+        name: Remux-1080p - Anime
+        reset_unmatched_scores:
+          enabled: true
+
+    custom_format_groups:
+      add: []
+      skip: []
+
+    # Custom Formats: https://recyclarr.dev/reference/configuration/custom-formats/
     custom_formats:
       - trash_ids:
           - 026d5aadd1a6b4e550b134cb6c72b3ca # Uncensored
         assign_scores_to:
           - name: Remux-1080p - Anime
-            score: 750 # Adjust scoring as desired
+            score: 750
 
       - trash_ids:
           - b2550eb333d27b75833e25b8c2557b38 # 10bit
         assign_scores_to:
           - name: Remux-1080p - Anime
-            score: 0 # Adjust scoring as desired
+            score: 0
 
       - trash_ids:
           - 418f50b10f1907201b6cfdf881f467b7 # Anime Dual Audio
         assign_scores_to:
           - name: Remux-1080p - Anime
-            score: 2500 # Adjust scoring as desired
+            score: 1500
+
   sonarr:
     base_url: !secret sonarr_url
     api_key: !secret sonarr_apikey
 
-    include:
-      # Comment out any of the following includes to disable them
-      - template: sonarr-quality-definition-series
-      # Choose between the standard or alternative quality profile setup (choose one only)
-      - template: sonarr-v4-quality-profile-web-1080p
-      # - template: sonarr-v4-quality-profile-web-1080p-alternative
-      - template: sonarr-v4-custom-formats-web-1080p
-      # Choose between the standard or alternative quality profile setup (choose one only)
-      - template: sonarr-v4-quality-profile-web-2160p
-      # - template: sonarr-v4-quality-profile-web-2160p-alternative
-      - template: sonarr-v4-custom-formats-web-2160p
+    quality_definition:
+      type: series
 
-      
+    # Season folder is intentionally not managed: existing folders are "Season N" (unpadded)
+    # and changing the format would move every file on the next rename.
+    media_naming:
+      series: plex-tvdb
+      episodes:
+        rename: true
+        standard: default
+        daily: default
+        anime: default
+
+    quality_profiles:
+      - trash_id: 72dae194fc92bf828f32cde7744e51a1 # WEB-1080p
+        name: WEB-1080p
+        reset_unmatched_scores:
+          enabled: true
+      - trash_id: d1498e7d189fbe6c7110ceaabb7473e6 # WEB-2160p
+        name: WEB-2160p
+        reset_unmatched_scores:
+          enabled: true
+
+    custom_format_groups:
+      add:
+        - trash_id: 158188097a58d7687dee647e04af0da3 # [Optional] Golden Rule HD
+        - trash_id: e3f37512790f00d0e89e54fe5e790d1c # [Optional] Golden Rule UHD
+        - trash_id: 85fae4a2294965b75710ef2989c850eb # [Streaming Services] HD/UHD boost
+        - trash_id: 59c3af66780d08332fdc64e68297098f # [Unwanted] Unwanted Formats
+        # Block Dolby Vision releases without an HDR10 fallback (not all devices support DV)
+        - trash_id: d776a1ea912a117d66d83b880ff2055d # [HDR Formats] DV (w/o HDR fallback)
+        # Block ALL SDR releases. Swap to "SDR (no WEBDL)" (83304f26...) to allow SDR WEB.
+        - trash_id: e1053c0ef622df3749fa43c22865663a # [HDR Formats] SDR
+          select:
+            - 2016d1676f5ee13a5b7257ff86ac9a93 # SDR
+        # HDR10+ Boost, uncomment if any of your devices support HDR10+
+        # - trash_id: 7d366c213e5c23a052b157356fac1921 # [HDR Formats] HDR10+ Boost
+      skip: []
+
     custom_formats:
-      # HDR Formats
+      # Disable x265 from HD-1080p (Sonarr's built-in profile, not guide-backed)
       - trash_ids:
-          # Comment out the next line if you and all of your users' setups are fully DV compatible
-          - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
-
-          # HDR10+ Boost - Uncomment the next two lines if any of your devices DO support HDR10+
-          # - 0dad0a507451acddd754fe6dc3a7f5e7 # HDR10+ Boost
-          # - 385e9e8581d33133c3961bdcdeffb7b4 # DV HDR10+ Boost
+          - c9eafd50846d299b862ca9bb6ea91950 # x265
+          - 47435ece6b99a0b477caf360e79ba0bb # x265 (HD)
         assign_scores_to:
-          - name: WEB-2160p
-
-      # Optional
-      - trash_ids:
-          # - 32b367365729d530ca1c124a0b180c64 # Bad Dual Groups
-          # - 82d40da2bc6923f41e14394075dd4b03 # No-RlsGroup
-          # - e1a997ddb54e3ecbfe06341ad323c458 # Obfuscated
-          # - 06d66ab109d4d2eddb2794d21526d140 # Retags
-          # - 1b3994c551cbb92a2c781af061f4ab44 # Scene
-        assign_scores_to:
-          - name: WEB-2160p
-
-      - trash_ids:
-          # Uncomment the next six lines to allow x265 HD releases with HDR/DV
-          # - 47435ece6b99a0b477caf360e79ba0bb # x265 (HD)
-        # assign_scores_to:
-          # - name: WEB-2160p
-            # score: 0
-      # - trash_ids:
-          # - 9b64dff695c2115facf1b6ea59c9bd07 # x265 (no HDR/DV)
-        assign_scores_to:
-          - name: WEB-2160p
-
-      # Optional SDR
-      # Only ever use ONE of the following custom formats:
-      # SDR - block ALL SDR releases
-      # SDR (no WEBDL) - block UHD/4k Remux and Bluray encode SDR releases, but allow SDR WEB
-      - trash_ids:
-          - 2016d1676f5ee13a5b7257ff86ac9a93 # SDR
-          # - 83304f261cf516bb208c18c54c0adf97 # SDR (no WEBDL)
-        assign_scores_to:
-          - name: WEB-2160p
+          - name: HD-1080p
+            score: -2000
 
 radarr:
   radarr:
     base_url: !secret radarr_url
     api_key: !secret radarr_apikey
 
-    include:
-      # Comment out any of the following includes to disable them
-      - template: radarr-quality-definition-movie
-      - template: radarr-quality-profile-hd-bluray-web
-      - template: radarr-custom-formats-hd-bluray-web
-      - template: radarr-quality-profile-uhd-bluray-web
-      - template: radarr-custom-formats-uhd-bluray-web
-      - template: radarr-quality-profile-remux-web-1080p
-      - template: radarr-custom-formats-remux-web-1080p
-      - template: radarr-quality-profile-remux-web-2160p
-      - template: radarr-custom-formats-remux-web-2160p
+    quality_definition:
+      type: movie
 
-    custom_formats:
-      - trash_ids:
-          # Comment out the next line if you and all of your users' setups are fully DV compatible
-          - 923b6abef9b17f937fab56cfcf89e1f1 # DV (WEBDL)
+    media_naming:
+      folder: plex-tmdb
+      movie:
+        rename: true
+        standard: plex-tmdb
 
-          # HDR10+ Boost - Uncomment the next two lines if any of your devices DO support HDR10+
-          # - b17886cb4158d9fea189859409975758 # HDR10Plus Boost
-          # - 55a5b50cb416dea5a50c4955896217ab # DV HDR10+ Boost
-        assign_scores_to:
-          - name: Remux + WEB 2160p
-          - name: UHD Bluray + WEB
+    quality_profiles:
+      - trash_id: d1d67249d3890e49bc12e275d989a7e9 # HD Bluray + WEB
+        name: HD Bluray + WEB
+        reset_unmatched_scores:
+          enabled: true
+      - trash_id: 64fb5f9858489bdac2af690e27c8f42f # UHD Bluray + WEB
+        name: UHD Bluray + WEB
+        reset_unmatched_scores:
+          enabled: true
+      - trash_id: 9ca12ea80aa55ef916e3751f4b874151 # Remux + WEB 1080p
+        name: Remux + WEB 1080p
+        reset_unmatched_scores:
+          enabled: true
+      - trash_id: fd161a61e3ab826d3a22d53f935696dd # Remux + WEB 2160p
+        name: Remux + WEB 2160p
+        reset_unmatched_scores:
+          enabled: true
 
-      # Optional SDR
-      # Only ever use ONE of the following custom formats:
-      # SDR - block ALL SDR releases
-      # SDR (no WEBDL) - block UHD/4k Remux and Bluray encode SDR releases, but allow SDR WEB
-      - trash_ids:
-          - 9c38ebb7384dada637be8899efa68e6f # SDR
-          # - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
-        assign_scores_to:
-          - name: Remux + WEB 2160p
-          - name: UHD Bluray + WEB
+    custom_format_groups:
+      add:
+        - trash_id: f8bf8eab4617f12dfdbd16303d8da245 # [Optional] Golden Rule HD
+        - trash_id: ff204bbcecdd487d1cefcefdbf0c278d # [Optional] Golden Rule UHD
+        - trash_id: a3ac6af01d78e4f21fcb75f601ac96df # [Unwanted] Unwanted Formats
+        # Block Dolby Vision releases without an HDR10 fallback (not all devices support DV)
+        - trash_id: 7fc2751eef7e6bdc70b74136e5e35c76 # [HDR Formats] DV (w/o HDR fallback)
+        # Block ALL SDR releases. Swap to "SDR (no WEBDL)" (25c12f78...) to allow SDR WEB.
+        - trash_id: 47f0d69750de9e16855915fa73bb7b08 # [HDR Formats] SDR
+          select:
+            - 9c38ebb7384dada637be8899efa68e6f # SDR
+        # HDR10+ Boost, uncomment if any of your devices support HDR10+
+        # - trash_id: b29413a7487478fe98228ce79e5689e4 # [HDR Formats] HDR10+ Boost
+      skip: []

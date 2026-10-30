@@ -183,6 +183,7 @@ services:
     image: ghcr.io/recyclarr/recyclarr:latest
     container_name: recyclarr
     user: 1000:1000
+    restart: unless-stopped
     network_mode: bridge
     volumes:
       - /etc/localtime:/etc/localtime:ro
